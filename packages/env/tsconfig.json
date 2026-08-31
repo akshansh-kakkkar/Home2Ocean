@@ -1,0 +1,3 @@
+{
+  "extends": "@home2ocean/config/tsconfig.base.json"
+}
