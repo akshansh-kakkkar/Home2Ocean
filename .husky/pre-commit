@@ -1,1 +1,2 @@
 lint-staged
+bunx biome check --write .

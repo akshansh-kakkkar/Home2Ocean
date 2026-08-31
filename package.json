@@ -37,7 +37,9 @@
     "db:generate": "turbo run db:generate -F @home2ocean/db --",
     "db:migrate": "turbo run db:migrate -F @home2ocean/db --",
     "check": "biome check --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint": "biome check .",
+    "format" : "biome check --write ."
   },
   "dependencies": {
     "@home2ocean/env": "workspace:*",
