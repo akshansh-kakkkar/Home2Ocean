@@ -23,9 +23,8 @@ enum ProjectStatus {
   PERMANENTLY_REJECTED
 }
 
-enum ReviewStatus {
-  PROJECT_PENDING
-  PROJECT_SENT_TO_ADMIN
+enum ReviewDecision {
+  PROJECT_REJECTED
   PROJECT_APPROVED
   PROJECT_PERMANENTLY_REJECTED
 }
@@ -41,6 +40,9 @@ model User {
   updatedAt     DateTime  @updatedAt()
   sessions      Session[]
   accounts      Account[]
+  projects Project[]
+  reviews Review[]
+  hackatimeConnection HackatimeConnection?
 
   @@unique([email])
   @@map("user")
@@ -58,4 +60,35 @@ model Project {
   status      ProjectStatus @default(DRAFT)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  reviews Review[]
+  @@index([userId])
+  @@index([status])
+  @@map("project")
+}
+
+model Review {
+  id         String         @id
+  projectId  String
+  reviewerId String
+  decision   ReviewDecision
+  comment    String
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  reviewer User @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([reviewerId])
+  @@map("review")
+}
+
+model HackatimeConnection {
+  id String @id
+  userId String @unique
+  accessToken String
+  refreshToken String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("hackatime_connection")
 }
