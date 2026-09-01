@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
-
-import { ModeToggle } from "./mode-toggle";
 import UserMenu from "./user-menu";
+import { ModeToggle } from "./mode-toggle";
 
 export default function Header() {
   const links = [
@@ -15,7 +14,7 @@ export default function Header() {
         <nav className="flex gap-4 text-lg">
           {links.map(({ to, label }) => {
             return (
-              <Link key={to} to={to}>
+              <Link key={to} to="/">
                 {label}
               </Link>
             );

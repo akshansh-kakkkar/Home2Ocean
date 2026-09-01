@@ -1,40 +1,21 @@
-import { Toaster } from "@home2ocean/ui/components/sonner";
-import type { QueryClient } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { HeadContent, Outlet, createRootRouteWithContext } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { trpc } from "@/utils/trpc";
+import { createRootRoute, HeadContent, Outlet } from "@tanstack/react-router";
+import { QueryClient } from "@tanstack/react-query";
 
-import Header from "@/components/header";
+import { Toaster } from "sonner";
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from "@/components/theme-provider";
-import type { trpc } from "@/utils/trpc";
-
-import "../index.css";
+import Header from "@/components/header";
 
 export interface RouterAppContext {
-  trpc: typeof trpc;
-  queryClient: QueryClient;
+    trpc : typeof trpc,
+    queryClient : QueryClient
 }
 
-export const Route = createRootRouteWithContext<RouterAppContext>()({
-  component: RootComponent,
-  head: () => ({
-    meta: [
-      {
-        title: "home2ocean",
-      },
-      {
-        name: "description",
-        content: "home2ocean is a web application",
-      },
-    ],
-    links: [
-      {
-        rel: "icon",
-        href: "/favicon.ico",
-      },
-    ],
-  }),
-});
+export const Route = createRootRoute({
+    component : ()=> <Outlet />
+})
 
 function RootComponent() {
   return (
