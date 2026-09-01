@@ -1,10 +1,61 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated"
+  provider     = "prisma-client"
+  output       = "../generated"
   moduleFormat = "esm"
-  runtime = "bun"
+  runtime      = "bun"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Roles {
+  USER
+  REVIEWER
+  ADMIN
+}
+
+enum ProjectStatus {
+  DRAFT
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  PERMANENTLY_REJECTED
+}
+
+enum ReviewStatus {
+  PROJECT_PENDING
+  PROJECT_SENT_TO_ADMIN
+  PROJECT_APPROVED
+  PROJECT_PERMANENTLY_REJECTED
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          Roles     @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt()
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Project {
+  id          String        @id
+  userId      String
+  bannerUrl   String?
+  title       String
+  description String
+  githubUrl   String
+  demoUrl     String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      ProjectStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
