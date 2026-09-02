@@ -1,24 +1,24 @@
 {
-  "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "base-lyra",
-  "rsc": false,
-  "tsx": true,
-  "tailwind": {
-    "config": "",
-    "css": "src/styles/globals.css",
-    "baseColor": "neutral",
-    "cssVariables": true,
-    "prefix": ""
-  },
-  "iconLibrary": "lucide",
-  "aliases": {
-    "components": "@home2ocean/ui/components",
-    "utils": "@home2ocean/ui/lib/utils",
-    "hooks": "@home2ocean/ui/hooks",
-    "lib": "@home2ocean/ui/lib",
-    "ui": "@home2ocean/ui/components"
-  },
-  "menuColor": "default",
-  "menuAccent": "subtle",
-  "registries": {}
+	"$schema": "https://ui.shadcn.com/schema.json",
+	"style": "base-lyra",
+	"rsc": false,
+	"tsx": true,
+	"tailwind": {
+		"config": "",
+		"css": "src/styles/globals.css",
+		"baseColor": "neutral",
+		"cssVariables": true,
+		"prefix": ""
+	},
+	"iconLibrary": "lucide",
+	"aliases": {
+		"components": "@home2ocean/ui/components",
+		"utils": "@home2ocean/ui/lib/utils",
+		"hooks": "@home2ocean/ui/hooks",
+		"lib": "@home2ocean/ui/lib",
+		"ui": "@home2ocean/ui/components"
+	},
+	"menuColor": "default",
+	"menuAccent": "subtle",
+	"registries": {}
 }

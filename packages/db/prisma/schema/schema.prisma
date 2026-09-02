@@ -9,6 +9,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum WalletTransationType {
+  SHIP_APPROVED
+  REWARD_PURCHASE
+  ADMIN_ADJUSTMENT
+}
+
 enum Roles {
   USER
   REVIEWER
@@ -29,25 +35,6 @@ enum ReviewDecision {
   PROJECT_PERMANENTLY_REJECTED
 }
 
-model User {
-  id            String    @id
-  name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
-  image         String?
-  role          Roles     @default(USER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt()
-  sessions      Session[]
-  accounts      Account[]
-  projects Project[]
-  reviews Review[]
-  hackatimeConnection HackatimeConnection?
-
-  @@unique([email])
-  @@map("user")
-}
-
 model Project {
   id          String        @id
   userId      String
@@ -60,7 +47,8 @@ model Project {
   status      ProjectStatus @default(DRAFT)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  reviews Review[]
+  reviews     Review[]
+
   @@index([userId])
   @@index([status])
   @@map("project")
@@ -74,8 +62,8 @@ model Review {
   comment    String
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  reviewer User @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  project    Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  reviewer   User           @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
 
   @@index([projectId])
   @@index([reviewerId])
@@ -83,12 +71,86 @@ model Review {
 }
 
 model HackatimeConnection {
-  id String @id
-  userId String @unique
-  accessToken String
+  id           String   @id
+  userId       String   @unique
+  accessToken  String
   refreshToken String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@map("hackatime_connection")
+}
+
+model Wallet {
+  id           String              @id
+  userId       String              @unique
+  balance      Int                 @default(0)
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions WalletTransaction[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@map("wallet")
+}
+
+model WalletTransaction {
+  id        String               @id
+  walletId  String
+  userId    String
+  type      WalletTransationType
+  reason    String?
+  amount    Int
+  projectId String?
+  rewardId  String?
+  createdAt DateTime             @default(now())
+  wallet    Wallet               @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([userId])
+  @@index([projectId])
+  @@index([rewardId])
+  @@map("wallet_transaction")
+}
+
+model Reward {
+  id          String     @id
+  name        String
+  description String?
+  imageUrl    String?
+  price       Int
+  stock       Int
+  active      Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  purchases   Purchase[]
+
+  @@map("reward")
+}
+
+model Purchase {
+  id        String   @id
+  userId    String
+  rewardId  String
+  price     Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reward    Reward   @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id        String   @id
+  actorId   String
+  action    String
+  entity    String
+  entityId  String?
+  metadata  Json
+  createdAt DateTime @default(now())
+  actor User @relation(fields : [actorId], references : [id], onDelete : Cascade)
+
+  @@index([actorId])
+  @@index([entity])
+  @@index([entityId])
+  @@map("audit_log")
 }

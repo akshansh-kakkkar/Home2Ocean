@@ -1,15 +1,15 @@
-import SignupButton from "@/components/SignIn";
 import { createFileRoute } from "@tanstack/react-router";
+import SignupButton from "@/components/SignIn";
 
 export const Route = createFileRoute("/")({
-    component : Home,
-})
+	component: Home,
+});
 
-function Home(){
-    return(
-        <main>
-            <h1>Home2Ocean</h1>
-            <SignupButton />
-        </main>
-    )
+function Home() {
+	return (
+		<main>
+			<h1>Home2Ocean</h1>
+			<SignupButton />
+		</main>
+	);
 }

@@ -1,24 +1,24 @@
 {
-  "name": "@home2ocean/auth",
-  "type": "module",
-  "exports": {
-    ".": {
-      "default": "./src/index.ts"
-    },
-    "./*": {
-      "default": "./src/*.ts"
-    }
-  },
-  "scripts": {},
-  "dependencies": {
-    "@home2ocean/db": "workspace:*",
-    "@home2ocean/env": "workspace:*",
-    "better-auth": "catalog:",
-    "dotenv": "catalog:",
-    "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@home2ocean/config": "workspace:*",
-    "typescript": "catalog:"
-  }
+	"name": "@home2ocean/auth",
+	"type": "module",
+	"exports": {
+		".": {
+			"default": "./src/index.ts"
+		},
+		"./*": {
+			"default": "./src/*.ts"
+		}
+	},
+	"scripts": {},
+	"dependencies": {
+		"@home2ocean/db": "workspace:*",
+		"@home2ocean/env": "workspace:*",
+		"better-auth": "catalog:",
+		"dotenv": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@home2ocean/config": "workspace:*",
+		"typescript": "catalog:"
+	}
 }

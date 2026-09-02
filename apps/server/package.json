@@ -1,33 +1,33 @@
 {
-  "name": "server",
-  "type": "module",
-  "main": "src/index.ts",
-  "scripts": {
-    "build": "tsdown",
-    "check-types": "tsc -b",
-    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
-    "dev": "bun run --hot src/index.ts",
-    "start": "bun run dist/index.mjs"
-  },
-  "dependencies": {
-    "@home2ocean/api": "workspace:*",
-    "@home2ocean/auth": "workspace:*",
-    "@home2ocean/db": "workspace:*",
-    "@home2ocean/env": "workspace:*",
-    "@hono/trpc-server": "^0.4.2",
-    "@trpc/server": "catalog:",
-    "better-auth": "catalog:",
-    "cors": "^2.8.6",
-    "dotenv": "catalog:",
-    "express": "^5.2.1",
-    "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@home2ocean/config": "workspace:*",
-    "@types/bun": "catalog:",
-    "@types/cors": "^2.8.19",
-    "@types/express": "catalog:",
-    "tsdown": "^0.22.14",
-    "typescript": "catalog:"
-  }
+	"name": "server",
+	"type": "module",
+	"main": "src/index.ts",
+	"scripts": {
+		"build": "tsdown",
+		"check-types": "tsc -b",
+		"compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+		"dev": "bun run --hot src/index.ts",
+		"start": "bun run dist/index.mjs"
+	},
+	"dependencies": {
+		"@home2ocean/api": "workspace:*",
+		"@home2ocean/auth": "workspace:*",
+		"@home2ocean/db": "workspace:*",
+		"@home2ocean/env": "workspace:*",
+		"@hono/trpc-server": "^0.4.2",
+		"@trpc/server": "catalog:",
+		"better-auth": "catalog:",
+		"cors": "^2.8.6",
+		"dotenv": "catalog:",
+		"express": "^5.2.1",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@home2ocean/config": "workspace:*",
+		"@types/bun": "catalog:",
+		"@types/cors": "^2.8.19",
+		"@types/express": "catalog:",
+		"tsdown": "^0.22.14",
+		"typescript": "catalog:"
+	}
 }

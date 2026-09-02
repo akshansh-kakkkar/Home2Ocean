@@ -1,15 +1,22 @@
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-
-  @@unique([email])
+  id                  String               @id
+  name                String
+  email               String
+  emailVerified       Boolean              @default(false)
+  image               String?
+  role                Roles                @default(USER)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  sessions            Session[]
+  accounts            Account[]
+  projects            Project[]
+  reviews             Review[]
+  hackatimeConnection HackatimeConnection?
+  wallet Wallet?
+  walletTransactions WalletTransaction[]
+  purchases Purchase[]
+  auditLogs AuditLog[]
+  
   @@map("user")
 }
 
