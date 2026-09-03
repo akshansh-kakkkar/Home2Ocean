@@ -1,6 +1,7 @@
 import prisma from "@home2ocean/db";
-import type { Project } from "../../../../../packages/db/prisma/generated/client";
+import type { Project } from "@home2ocean/db"
 import { randomUUIDv7 } from "bun";
+
 export async function createProject(
     userId: string,
     data: {
