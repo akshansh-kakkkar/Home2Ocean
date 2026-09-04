@@ -3,13 +3,15 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"default": "./src/index.ts"
+			"default": "./dist/index.js"
 		},
 		"./*": {
-			"default": "./src/*.ts"
+			"default": "./dist/*.js"
 		}
 	},
-	"scripts": {},
+	"scripts": {
+		"build" : "tsc -b"
+	},
 	"dependencies": {
 		"@home2ocean/auth": "workspace:*",
 		"@home2ocean/db": "workspace:*",

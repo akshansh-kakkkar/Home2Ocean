@@ -1,5 +1,5 @@
-import { createContext } from "@home2ocean/api/context";
-import { appRouter } from "@home2ocean/api/routers/index";
+import { createContext } from "./trpc";
+import { appRouter } from "./router";
 import { auth } from "@home2ocean/auth";
 import { env } from "@home2ocean/env/server";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
