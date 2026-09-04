@@ -32,3 +32,7 @@ export const createProjectSchema = z.object({
 export const getProjectSchema = z.object({
     id : string(),
 })
+
+export const deleteProjectSchema = z.object({
+    id : string(),
+})

@@ -33,3 +33,11 @@ export async function getProject(id: string): Promise<Project | null> {
         }
     })
 }
+
+export async function deleteProject(id: string): Promise<Project | null> {
+    return prisma.project.delete({
+        where: {
+            id,
+        }
+    })
+}

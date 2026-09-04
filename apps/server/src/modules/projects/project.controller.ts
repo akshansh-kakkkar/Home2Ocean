@@ -1,4 +1,4 @@
-import { createProject, getProject } from "./project.service"
+import { createProject, deleteProject, getProject } from "./project.service"
 import type { Project } from "@home2ocean/db"
 
 export async function createProjectController(
@@ -18,4 +18,8 @@ export async function getProjectController(
 
 ): Promise<Project | null> {
     return getProject(id)
+}
+
+export async function deleteProjectController(id : string) : Promise<Project | null>{
+    return deleteProject(id)
 }
