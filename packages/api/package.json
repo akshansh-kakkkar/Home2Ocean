@@ -10,7 +10,7 @@
 		}
 	},
 	"scripts": {
-		"build" : "tsc -b"
+		"build": "tsc -b"
 	},
 	"dependencies": {
 		"@home2ocean/auth": "workspace:*",

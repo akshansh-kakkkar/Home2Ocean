@@ -3,6 +3,7 @@ import { authClient } from "@/lib/auth-client";
 export default function SignupButton() {
 	return (
 		<button
+			type="button"
 			onClick={async () => {
 				await authClient.signIn.social({
 					provider: "hackclub",
@@ -10,7 +11,7 @@ export default function SignupButton() {
 				});
 			}}
 		>
-			Signup
+			Submit
 		</button>
 	);
 }

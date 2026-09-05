@@ -5,10 +5,12 @@
 		"clientKind": "git",
 		"useIgnoreFile": false
 	},
+
 	"files": {
 		"ignoreUnknown": false,
 		"includes": [
 			"**",
+			"!packages/db/prisma/generated",
 			"!**/.next",
 			"!**/dist",
 			"!**/.turbo",
@@ -69,6 +71,20 @@
 			"quoteStyle": "double"
 		}
 	},
+	"overrides": [
+		{
+			"includes": ["packages/ui/**"],
+			"linter": {
+				"rules": {
+					"a11y": {
+						"useSemanticElements": "off",
+						"useKeyWithClickEvents": "off",
+						"noLabelWithoutControl": "off"
+					}
+				}
+			}
+		}
+	],
 	"css": {
 		"parser": {
 			"tailwindDirectives": true
