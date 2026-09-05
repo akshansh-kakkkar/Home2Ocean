@@ -5,6 +5,7 @@ import {
 	editProject,
 	getAllProjects,
 	getProject,
+	startProjectTracking,
 } from "./project.service";
 
 export async function createProjectController(
@@ -47,4 +48,11 @@ export async function deleteProjectController(
 
 export async function getAllProjectsController(): Promise<Project[]> {
 	return getAllProjects();
+}
+
+export async function startProjectTrackingController(
+	id: string,
+	userId: string,
+): Promise<Project> {
+	return startProjectTracking(id, userId);
 }

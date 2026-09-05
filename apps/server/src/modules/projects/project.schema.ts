@@ -45,3 +45,7 @@ export const deleteProjectSchema = z.object({
 });
 
 export const getAllProjectSchema = z.array(projectSchema);
+
+export const startTrackingSchema = z.object({
+	id: z.string(),
+});

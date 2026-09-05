@@ -43,12 +43,14 @@ model Project {
   description String
   githubUrl   String
   demoUrl     String
+  hackatimeProjectName String?
+  hackatimeStartedAt DateTime?
+  hackatimeEndedAt DateTime?
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   status      ProjectStatus @default(DRAFT)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   reviews     Review[]
-
   @@index([userId])
   @@index([status])
   @@map("project")

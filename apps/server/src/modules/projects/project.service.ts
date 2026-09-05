@@ -1,5 +1,6 @@
 import type { Project } from "@home2ocean/db";
 import prisma from "@home2ocean/db";
+import { TRPCError } from "@trpc/server";
 import { randomUUIDv7 } from "bun";
 
 export async function createProject(
@@ -63,6 +64,42 @@ export async function getAllProjects(): Promise<Project[]> {
 	return prisma.project.findMany({
 		orderBy: {
 			createdAt: "desc",
+		},
+	});
+}
+
+export async function startProjectTracking(
+	id: string,
+	userId: string,
+): Promise<Project> {
+	const project = await prisma.project.findUnique({
+		where: { id },
+	});
+
+	if (!project) {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "Project not found",
+		});
+	}
+
+	if (project.userId !== userId) {
+		throw new TRPCError({
+			code: "FORBIDDEN",
+			message: "You do not own this project",
+		});
+	}
+
+	if (project.hackatimeStartedAt) {
+		throw new TRPCError({
+			code: "CONFLICT",
+			message: "Tracking has already started",
+		});
+	}
+	return prisma.project.update({
+		where: { id },
+		data: {
+			hackatimeStartedAt: new Date(),
 		},
 	});
 }

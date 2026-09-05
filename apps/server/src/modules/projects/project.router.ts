@@ -5,6 +5,7 @@ import {
 	editProjectController,
 	getAllProjectsController,
 	getProjectController,
+	startProjectTrackingController,
 } from "./project.controller";
 import {
 	createProjectSchema,
@@ -13,6 +14,7 @@ import {
 	getAllProjectSchema,
 	getProjectSchema,
 	projectSchema,
+	startTrackingSchema,
 } from "./project.schema";
 
 export const projectRouter = router({
@@ -44,4 +46,10 @@ export const projectRouter = router({
 	list: protectedProcedure.output(getAllProjectSchema).query(async () => {
 		return getAllProjectsController();
 	}),
+	startTracking: protectedProcedure
+		.input(startTrackingSchema)
+		.output(projectSchema)
+		.mutation(async ({ ctx, input }) => {
+			return startProjectTrackingController(input.id, ctx.session.user.id);
+		}),
 });
