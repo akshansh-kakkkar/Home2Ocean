@@ -20,7 +20,7 @@
       },
     },
     "apps/server": {
-      "name": "server",
+      "name": "@home2ocean/server",
       "dependencies": {
         "@home2ocean/api": "workspace:*",
         "@home2ocean/auth": "workspace:*",
@@ -49,6 +49,7 @@
       "dependencies": {
         "@home2ocean/api": "workspace:*",
         "@home2ocean/env": "workspace:*",
+        "@home2ocean/server": "workspace:*",
         "@home2ocean/ui": "workspace:*",
         "@tailwindcss/vite": "^4.3.3",
         "@tanstack/react-form": "^1.33.2",
@@ -320,6 +321,8 @@
     "@home2ocean/db": ["@home2ocean/db@workspace:packages/db"],
 
     "@home2ocean/env": ["@home2ocean/env@workspace:packages/env"],
+
+    "@home2ocean/server": ["@home2ocean/server@workspace:apps/server"],
 
     "@home2ocean/ui": ["@home2ocean/ui@workspace:packages/ui"],
 
@@ -1266,8 +1269,6 @@
     "seroval-plugins": ["seroval-plugins@1.6.4", "", { "peerDependencies": { "seroval": "^1.0" } }, "sha512-R0f1U9hmn38+dFMz6b6ab8lwucmw4AtiY7St+JPWudy1dm+Bs3g884nyrsH9Cy6rKpZKLYayXuMda9GZ/fl8JQ=="],
 
     "serve-static": ["serve-static@2.2.1", "", { "dependencies": { "encodeurl": "^2.0.0", "escape-html": "^1.0.3", "parseurl": "^1.3.3", "send": "^1.2.0" } }, "sha512-xRXBn0pPqQTVQiC8wyQrKs2MOlX24zQ0POGaj0kultvoOCstBQM5yvOhAVSUwOMjQtTvsPWoNCHfPGwaaQJhTw=="],
-
-    "server": ["server@workspace:apps/server"],
 
     "set-cookie-parser": ["set-cookie-parser@3.1.2", "", {}, "sha512-5/r/lTwbJ3zQ+qwdUFZYeRNqda7P5HD8zQKqlSjdGt1/S0cjLAphHusj4Y58ahDtWn/g32xrIS58/ikOvwl0Lw=="],
 

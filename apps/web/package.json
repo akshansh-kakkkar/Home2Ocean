@@ -11,6 +11,7 @@
 		"check-types": "vite build && tsc --noEmit"
 	},
 	"dependencies": {
+		"@home2ocean/server": "workspace:*",
 		"@home2ocean/api": "workspace:*",
 		"@home2ocean/env": "workspace:*",
 		"@home2ocean/ui": "workspace:*",

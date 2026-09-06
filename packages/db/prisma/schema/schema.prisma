@@ -15,6 +15,17 @@ enum WalletTransationType {
   ADMIN_ADJUSTMENT
 }
 
+enum Permission {
+  MANAGE_USERS
+  MANAGE_ROLES
+  MANAGE_PROJECTS
+  MANAGE_REVIEWS
+  MANAGE_TRACKING
+  MANAGE_SHOP
+  MANAGE_WALLET
+  MANAGE_FULLFILLMENT
+}
+
 enum Roles {
   USER
   REVIEWER
@@ -35,22 +46,38 @@ enum ReviewDecision {
   PROJECT_PERMANENTLY_REJECTED
 }
 
+model UserPermission {
+  id         String     @id
+  userId     String
+  permission Permission
+  grantedBy  String
+  createdAt  DateTime   @default(now())
+  user       User       @relation("UserPermissions", fields: [userId], references: [id], onDelete: Cascade)
+  grantor    User       @relation("GrantedPermissions", fields: [grantedBy], references: [id], onDelete: Cascade)
+
+  @@unique([userId, permission])
+  @@index([userId])
+  @@index([grantedBy])
+  @@map("user_permission")
+}
+
 model Project {
-  id          String        @id
-  userId      String
-  bannerUrl   String?
-  title       String
-  description String
-  githubUrl   String
-  demoUrl     String
+  id                   String        @id
+  userId               String
+  bannerUrl            String?
+  title                String
+  description          String
+  githubUrl            String
+  demoUrl              String
   hackatimeProjectName String?
-  hackatimeStartedAt DateTime?
-  hackatimeEndedAt DateTime?
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  status      ProjectStatus @default(DRAFT)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  reviews     Review[]
+  hackatimeStartedAt   DateTime?
+  hackatimeEndedAt     DateTime?
+  user                 User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status               ProjectStatus @default(DRAFT)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  reviews              Review[]
+
   @@index([userId])
   @@index([status])
   @@map("project")
@@ -149,7 +176,7 @@ model AuditLog {
   entityId  String?
   metadata  Json
   createdAt DateTime @default(now())
-  actor User @relation(fields : [actorId], references : [id], onDelete : Cascade)
+  actor     User     @relation(fields: [actorId], references: [id], onDelete: Cascade)
 
   @@index([actorId])
   @@index([entity])

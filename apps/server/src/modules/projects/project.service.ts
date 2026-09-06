@@ -71,6 +71,7 @@ export async function getAllProjects(): Promise<Project[]> {
 export async function startProjectTracking(
 	id: string,
 	userId: string,
+	stopAt: Date,
 ): Promise<Project> {
 	const project = await prisma.project.findUnique({
 		where: { id },
@@ -96,10 +97,17 @@ export async function startProjectTracking(
 			message: "Tracking has already started",
 		});
 	}
+	if (stopAt <= new Date()) {
+		throw new TRPCError({
+			code: "BAD_REQUEST",
+			message: "Stop time must be in the future",
+		});
+	}
 	return prisma.project.update({
 		where: { id },
 		data: {
 			hackatimeStartedAt: new Date(),
+			hackatimeEndedAt: stopAt,
 		},
 	});
 }

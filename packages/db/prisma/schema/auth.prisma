@@ -1,7 +1,7 @@
 model User {
   id                  String               @id
   name                String
-  email               String
+  email               String @unique
   emailVerified       Boolean              @default(false)
   image               String?
   role                Roles                @default(USER)
@@ -10,7 +10,10 @@ model User {
   sessions            Session[]
   accounts            Account[]
   projects            Project[]
+  isOwner Boolean @default(false)
   reviews             Review[]
+  permissions UserPermission[] @relation("UserPermissions")
+  permissionsGranted UserPermission[] @relation("GrantedPermissions")
   hackatimeConnection HackatimeConnection?
   wallet Wallet?
   walletTransactions WalletTransaction[]

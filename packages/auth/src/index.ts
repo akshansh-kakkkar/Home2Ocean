@@ -11,6 +11,20 @@ export function createAuth() {
 		database: prismaAdapter(prisma, {
 			provider: "postgresql",
 		}),
+		user: {
+			additionalFields: {
+				role: {
+					type: "string",
+					required: true,
+					defaultValue: "USER",
+				},
+				isOwner: {
+					type: "boolean",
+					required: true,
+					defaultValue: false,
+				},
+			},
+		},
 
 		trustedOrigins: [env.CORS_ORIGIN],
 		emailAndPassword: {

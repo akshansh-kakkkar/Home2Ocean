@@ -7,3 +7,7 @@ export const hackatimeProjectResponseSchema = z.object({
 export type HackatimeProjectsResponse = z.infer<
 	typeof hackatimeProjectResponseSchema
 >;
+
+export const hackatimeHoursResponseSchema = z.object({
+	total_seconds: z.number(),
+});

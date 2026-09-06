@@ -1,6 +1,9 @@
 {
-	"name": "server",
+	"name": "@home2ocean/server",
 	"type": "module",
+	"exports": {
+		"./router": "./src/router.ts"
+	},
 	"main": "src/index.ts",
 	"scripts": {
 		"build": "tsdown",

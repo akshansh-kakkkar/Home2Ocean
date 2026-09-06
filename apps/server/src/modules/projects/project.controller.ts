@@ -53,6 +53,7 @@ export async function getAllProjectsController(): Promise<Project[]> {
 export async function startProjectTrackingController(
 	id: string,
 	userId: string,
+	stopAt: Date,
 ): Promise<Project> {
-	return startProjectTracking(id, userId);
+	return startProjectTracking(id, userId, stopAt);
 }

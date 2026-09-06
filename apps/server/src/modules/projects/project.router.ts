@@ -50,6 +50,10 @@ export const projectRouter = router({
 		.input(startTrackingSchema)
 		.output(projectSchema)
 		.mutation(async ({ ctx, input }) => {
-			return startProjectTrackingController(input.id, ctx.session.user.id);
+			return startProjectTrackingController(
+				input.id,
+				ctx.session.user.id,
+				input.stopAt,
+			);
 		}),
 });

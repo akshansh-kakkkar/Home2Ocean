@@ -1,5 +1,5 @@
-import type { AppRouter } from "@home2ocean/api/routers/index";
 import { env } from "@home2ocean/env/web";
+import type { AppRouter } from "@home2ocean/server/router";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";

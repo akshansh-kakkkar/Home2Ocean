@@ -1,5 +1,8 @@
 import prisma from "@home2ocean/db";
-import { hackatimeProjectResponseSchema } from "./hackatime.schema";
+import {
+	hackatimeHoursResponseSchema,
+	hackatimeProjectResponseSchema,
+} from "./hackatime.schema";
 
 export async function getHackatimeProjects(userId: string) {
 	const connection = await prisma.hackatimeConnection.findUnique({
@@ -31,9 +34,7 @@ export async function getHackatimeProjects(userId: string) {
 				projects: [],
 			};
 		}
-		const data = await hackatimeProjectResponseSchema.parse(
-			await response.json(),
-		);
+		const data = hackatimeProjectResponseSchema.parse(await response.json());
 		return {
 			success: true as const,
 			projects: data.projects,
@@ -45,4 +46,34 @@ export async function getHackatimeProjects(userId: string) {
 			projects: [],
 		};
 	}
+}
+
+export async function getHackatimeHours(
+	userId: string,
+	startDate: Date,
+	endDate: Date,
+) {
+	const connection = await prisma.hackatimeConnection.findUnique({
+		where: {
+			userId,
+		},
+	});
+	if (!connection) {
+		throw new Error("Hackatime is not connected");
+	}
+	const start = startDate.toISOString().split("T")[0];
+	const end = endDate.toISOString().split("T")[0];
+	const response = await fetch(
+		`https://hackatime.hackclub.com/api/v1/authenticated/hours?start_date=${start}&end_date=${end}`,
+		{
+			headers: {
+				Authorization: `Bearer ${connection.accessToken}`,
+			},
+		},
+	);
+	if (!response.ok) {
+		throw new Error("Unable to fetch Hackatime hours");
+	}
+	const data = hackatimeHoursResponseSchema.parse(await response.json());
+	return data;
 }

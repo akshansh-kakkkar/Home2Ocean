@@ -48,4 +48,5 @@ export const getAllProjectSchema = z.array(projectSchema);
 
 export const startTrackingSchema = z.object({
 	id: z.string(),
+	stopAt: z.date(),
 });
