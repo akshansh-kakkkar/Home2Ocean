@@ -1,8 +1,8 @@
-import { hackatimeRouter } from "./modules/hackatime/hackatime.router";
-import { projectRouter } from "./modules/projects/project.router";
+import { reviewerRouter } from "./modules/reviewer";
+import { userRouter } from "./modules/users/user.router";
 import { router } from "./trpc";
 export const appRouter = router({
-	projects: projectRouter,
-	hackatime: hackatimeRouter,
+	user : userRouter,
+	reviewers : reviewerRouter,
 });
 export type AppRouter = typeof appRouter;

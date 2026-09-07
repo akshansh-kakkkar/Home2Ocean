@@ -96,3 +96,17 @@ export function permissionProcedure(permission: Permission) {
 		return next({ ctx });
 	});
 }
+
+
+export const reviewerProcedure = protectedProcedure.use(({ctx, next})=> {
+	if(
+		ctx.session.user.role !== "REVIEWER" &&
+		ctx.session.user.role !== "ADMIN"
+	){
+		throw new TRPCError({
+			code : "FORBIDDEN",
+			message : "REVEIWER ACCESS REQUIRED"
+		})
+	};
+	return next({ctx})
+})
