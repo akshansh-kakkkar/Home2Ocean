@@ -1,6 +1,5 @@
 import { env } from "@home2ocean/env/server";
 import { PrismaNeon } from "@prisma/adapter-neon";
-
 import { PrismaClient } from "../prisma/generated/client";
 
 export function createPrismaClient() {
@@ -12,5 +11,8 @@ export function createPrismaClient() {
 }
 
 const prisma = createPrismaClient();
+
 export default prisma;
+
+export type { TimeTrack, User } from "../prisma/generated/browser";
 export type { Permission, Project } from "../prisma/generated/client";

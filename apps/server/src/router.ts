@@ -1,8 +1,10 @@
 import { reviewerRouter } from "./modules/reviewer";
+import { trackingRouter } from "./modules/tracking/tracking.router";
 import { userRouter } from "./modules/users/user.router";
 import { router } from "./trpc";
 export const appRouter = router({
-	user : userRouter,
-	reviewers : reviewerRouter,
+	user: userRouter,
+	reviewers: reviewerRouter,
+	tracking: trackingRouter,
 });
 export type AppRouter = typeof appRouter;

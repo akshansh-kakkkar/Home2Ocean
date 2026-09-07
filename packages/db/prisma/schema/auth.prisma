@@ -8,6 +8,7 @@ model User {
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   sessions            Session[]
+  createdTimeTracks TimeTrack[]   @relation("CreatedTimeTracks")
   accounts            Account[]
   projects            Project[]
   isOwner Boolean @default(false)

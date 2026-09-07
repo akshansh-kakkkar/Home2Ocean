@@ -32,6 +32,7 @@ enum Roles {
   ADMIN
 }
 
+
 enum ProjectStatus {
   DRAFT
   UNDER_REVIEW
@@ -44,6 +45,16 @@ enum ReviewDecision {
   PROJECT_REJECTED
   PROJECT_APPROVED
   PROJECT_PERMANENTLY_REJECTED
+}
+
+model TimeTrack {
+  id String @id
+  startAt  DateTime
+  stopAt DateTime
+  createdAt DateTime @default(now())
+  createdById String
+  createdBy User @relation("CreatedTimeTracks", fields: [createdById], references: [id], onDelete: Cascade)
+  updatedAt  DateTime @updatedAt
 }
 
 model UserPermission {
