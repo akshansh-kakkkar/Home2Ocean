@@ -23,12 +23,14 @@ export async function createProjectController(
 
 export async function getProjectController(
 	id: string,
+	userId: string,
 ): Promise<Project | null> {
-	return getProject(id);
+	return getProject(id, userId);
 }
 
 export async function editProjectController(
 	id: string,
+	userId: string,
 	data: {
 		title?: string;
 		description?: string;
@@ -37,17 +39,20 @@ export async function editProjectController(
 		bannerUrl?: string;
 	},
 ): Promise<Project | null> {
-	return editProject(id, data);
+	return editProject(id, userId, data);
 }
 
 export async function deleteProjectController(
 	id: string,
+	userId: string,
 ): Promise<Project | null> {
-	return deleteProject(id);
+	return deleteProject(id, userId);
 }
 
-export async function getAllProjectsController(): Promise<Project[]> {
-	return getAllProjects();
+export async function getAllProjectsController(
+	userId: string,
+): Promise<Project[]> {
+	return getAllProjects(userId);
 }
 
 export async function startProjectTrackingController(

@@ -1,5 +1,5 @@
 import { auth } from "@home2ocean/auth";
-import prisma from "@home2ocean/db";
+import prisma, { type Permission } from "@home2ocean/db";
 import { initTRPC, TRPCError } from "@trpc/server";
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import { fromNodeHeaders } from "better-auth/node";
@@ -78,3 +78,21 @@ export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
 		},
 	});
 });
+
+export function permissionProcedure(permission: Permission) {
+	return adminProcedure.use(({ ctx, next }) => {
+		if (ctx.user.isOwner) {
+			return next({ ctx });
+		}
+		const hasPermission = ctx.user.permissions.some(
+			(userPermission) => userPermission.permission === permission,
+		);
+		if (!hasPermission) {
+			throw new TRPCError({
+				code: "FORBIDDEN",
+				message: `Missing Permission: ${permission}`,
+			});
+		}
+		return next({ ctx });
+	});
+}

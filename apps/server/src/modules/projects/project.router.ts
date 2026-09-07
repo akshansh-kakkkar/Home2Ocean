@@ -27,25 +27,27 @@ export const projectRouter = router({
 	get: protectedProcedure
 		.input(getProjectSchema)
 		.output(projectSchema.nullable())
-		.query(async ({ input }) => {
-			return getProjectController(input.id);
+		.query(async ({ ctx, input }) => {
+			return getProjectController(input.id, ctx.session.user.id);
 		}),
 	edit: protectedProcedure
 		.input(editProjectSchema)
 		.output(projectSchema.nullable())
-		.mutation(async ({ input }) => {
+		.mutation(async ({ ctx, input }) => {
 			const { id, ...data } = input;
-			return editProjectController(id, data);
+			return editProjectController(id, ctx.session.user.id, data);
 		}),
 	delete: protectedProcedure
 		.input(deleteProjectSchema)
 		.output(projectSchema.nullable())
-		.mutation(async ({ input }) => {
-			return deleteProjectController(input.id);
+		.mutation(async ({ ctx, input }) => {
+			return deleteProjectController(input.id, ctx.session.user.id);
 		}),
-	list: protectedProcedure.output(getAllProjectSchema).query(async () => {
-		return getAllProjectsController();
-	}),
+	list: protectedProcedure
+		.output(getAllProjectSchema)
+		.query(async ({ ctx }) => {
+			return getAllProjectsController(ctx.session.user.id);
+		}),
 	startTracking: protectedProcedure
 		.input(startTrackingSchema)
 		.output(projectSchema)

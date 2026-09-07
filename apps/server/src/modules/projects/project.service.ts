@@ -26,16 +26,35 @@ export async function createProject(
 	});
 }
 
-export async function getProject(id: string): Promise<Project | null> {
-	return prisma.project.findUnique({
+export async function getProject(
+	id: string,
+	userId: string,
+): Promise<Project | null> {
+	const project = await prisma.project.findUnique({
 		where: {
 			id,
 		},
 	});
+
+	if (!project) {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "You are not allowed fetch this project.",
+		});
+	}
+	if (project.userId !== userId) {
+		throw new TRPCError({
+			code: "FORBIDDEN",
+			message: "You cannot access this.",
+		});
+	}
+
+	return project;
 }
 
 export async function editProject(
 	id: string,
+	userId: string,
 	data: {
 		title?: string;
 		description?: string;
@@ -44,6 +63,25 @@ export async function editProject(
 		bannerUrl?: string;
 	},
 ): Promise<Project | null> {
+	const project = await prisma.project.findUnique({
+		where: {
+			id,
+		},
+	});
+
+	if (!project) {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "Project not found",
+		});
+	}
+
+	if (project.userId !== userId) {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "You do not have permissions to access this project.",
+		});
+	}
 	return prisma.project.update({
 		where: {
 			id,
@@ -52,16 +90,62 @@ export async function editProject(
 	});
 }
 
-export async function deleteProject(id: string): Promise<Project | null> {
-	return prisma.project.delete({
+export async function deleteProject(
+	id: string,
+	userId: string,
+): Promise<Project | null> {
+	const project = await prisma.project.findUnique({
 		where: {
 			id,
 		},
 	});
+
+	if (!project) {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "You are not allowed to access this project.",
+		});
+	}
+
+	if (project.userId !== userId) {
+		throw new TRPCError({
+			code: "FORBIDDEN",
+			message: "You don't own this project.",
+		});
+	}
+	return prisma.project.delete({
+		where: { id },
+	});
 }
 
-export async function getAllProjects(): Promise<Project[]> {
+export async function getAllProjects(userId: string): Promise<Project[]> {
+	const user = await prisma.user.findUnique({
+		where: {
+			id: userId,
+		},
+		select: {
+			role: true,
+		},
+	});
+
+	if (!user) {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "User not found",
+		});
+	}
+
+	if (user.role === "REVIEWER" || user.role === "ADMIN") {
+		return prisma.project.findMany({
+			orderBy: {
+				createdAt: "desc",
+			},
+		});
+	}
 	return prisma.project.findMany({
+		where: {
+			userId,
+		},
 		orderBy: {
 			createdAt: "desc",
 		},
