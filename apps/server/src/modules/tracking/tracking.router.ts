@@ -1,5 +1,8 @@
-import { permissionProcedure, router } from "@/trpc";
-import { authorizeTrackingController } from "./tracking.controller";
+import { permissionProcedure, protectedProcedure, router } from "@/trpc";
+import {
+	authorizeTrackingController,
+	timeTrackingStatusController,
+} from "./tracking.controller";
 import { authorizeTrackingSchema } from "./tracking.schema";
 
 export const trackingRouter = router({
@@ -12,4 +15,7 @@ export const trackingRouter = router({
 				input.stopAt,
 			);
 		}),
+	trackingStatus: protectedProcedure.query(() => {
+		return timeTrackingStatusController();
+	}),
 });

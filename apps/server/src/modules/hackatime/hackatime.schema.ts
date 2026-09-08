@@ -11,3 +11,14 @@ export type HackatimeProjectsResponse = z.infer<
 export const hackatimeHoursResponseSchema = z.object({
 	total_seconds: z.number(),
 });
+
+export const hackatimeUserSchema = z.object({
+	id: z.number(),
+	emails: z.string().array(),
+	slack_id: z.string(),
+	github_username: z.string(),
+	trust_factor: z.object({
+		trust_level: z.string(),
+		trust_value: z.number(),
+	}),
+});

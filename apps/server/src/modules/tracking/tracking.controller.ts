@@ -1,4 +1,4 @@
-import { authorizeTracking } from "./tracking.service";
+import { authorizeTracking, timeTrackingStatus } from "./tracking.service";
 
 export async function authorizeTrackingController(
 	createdById: string,
@@ -6,4 +6,8 @@ export async function authorizeTrackingController(
 	stopAt: Date,
 ) {
 	return authorizeTracking(createdById, startAt, stopAt);
+}
+
+export async function timeTrackingStatusController() {
+	return timeTrackingStatus();
 }

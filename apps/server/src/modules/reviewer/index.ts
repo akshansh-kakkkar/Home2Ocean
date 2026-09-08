@@ -1,1 +1,1 @@
-export { reviewerRouter } from './reviewer.router';
+export { reviewerRouter } from "./reviewer.router";

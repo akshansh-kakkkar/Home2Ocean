@@ -48,3 +48,27 @@ export async function authorizeTracking(
 	});
 	return track;
 }
+
+export async function timeTrackingStatus() {
+	const now = new Date();
+	const timeTrack = await prisma.timeTrack.findFirst({
+		where: {
+			AND: [
+				{
+					startAt: {
+						lte: now,
+					},
+				},
+				{
+					stopAt: {
+						gt: now,
+					},
+				},
+			],
+		},
+	});
+	return {
+		isLive: Boolean(timeTrack),
+		tracking: timeTrack,
+	};
+}

@@ -1,7 +1,10 @@
 import prisma from "@home2ocean/db";
+import { TRPCError } from "@trpc/server";
+import { response } from "express";
 import {
 	hackatimeHoursResponseSchema,
 	hackatimeProjectResponseSchema,
+	hackatimeUserSchema,
 } from "./hackatime.schema";
 
 export async function getHackatimeProjects(userId: string) {
@@ -75,5 +78,40 @@ export async function getHackatimeHours(
 		throw new Error("Unable to fetch Hackatime hours");
 	}
 	const data = hackatimeHoursResponseSchema.parse(await response.json());
+	return data;
+}
+
+export async function getHackatimeUser(userId: string) {
+	const connection = await prisma.hackatimeConnection.findUnique({
+		where: {
+			userId,
+		},
+	});
+
+	if (!connection) {
+		return {
+			success: false as const,
+			error: "Unable to reach hackatime.",
+		};
+	}
+
+	const response = await fetch(
+		"https://hackatime.hackclub.com/api/v1/authenticated/me",
+		{
+			headers: {
+				Authorization: `Bearer ${connection.accessToken}`,
+			},
+		},
+	);
+
+	if (!response.ok) {
+		throw new TRPCError({
+			code: "BAD_REQUEST",
+			message: "Failed to fetch user from hackatime User string",
+		});
+	}
+
+	const data = hackatimeUserSchema.parse(await response.json());
+
 	return data;
 }

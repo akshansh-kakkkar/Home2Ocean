@@ -1,8 +1,8 @@
 import { router } from "@/trpc";
-import { projectRouter } from "../projects/project.router";
 import { hackatimeRouter } from "../hackatime/hackatime.router";
+import { projectRouter } from "../projects/project.router";
 
 export const userRouter = router({
-    projects: projectRouter,
-    hackatime: hackatimeRouter,
+	projects: projectRouter,
+	hackatime: hackatimeRouter,
 });

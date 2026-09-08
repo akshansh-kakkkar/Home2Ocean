@@ -1,5 +1,9 @@
-import { getHackatimeProjects } from "./hackatime.service";
+import { getHackatimeProjects, getHackatimeUser } from "./hackatime.service";
 
 export async function getHackatimeConnectionController(userId: string) {
-	getHackatimeProjects(userId);
+	return getHackatimeProjects(userId);
+}
+
+export async function getHackatimeUserController(userId: string) {
+	return getHackatimeUser(userId);
 }
