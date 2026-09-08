@@ -22,3 +22,16 @@ export const hackatimeUserSchema = z.object({
 		trust_value: z.number(),
 	}),
 });
+
+export const latestHackatimeHeartbeatsSchema = z.object({
+	id : z.string(),
+	created_at : z.string().datetime(),
+	time : z.string().datetime(),
+	category : z.string(),
+	project : z.string(),
+	language : z.string(),
+	editor : z.string(),
+	operating_system : z.string(),
+	machine : z.string(),
+	entity : z.string(),
+}).nullable()

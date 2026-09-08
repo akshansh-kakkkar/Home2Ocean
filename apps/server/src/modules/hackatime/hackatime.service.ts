@@ -1,10 +1,10 @@
 import prisma from "@home2ocean/db";
 import { TRPCError } from "@trpc/server";
-import { response } from "express";
 import {
 	hackatimeHoursResponseSchema,
 	hackatimeProjectResponseSchema,
 	hackatimeUserSchema,
+	latestHackatimeHeartbeatsSchema,
 } from "./hackatime.schema";
 
 export async function getHackatimeProjects(userId: string) {
@@ -61,24 +61,33 @@ export async function getHackatimeHours(
 			userId,
 		},
 	});
-	if (!connection) {
-		throw new Error("Hackatime is not connected");
-	}
-	const start = startDate.toISOString().split("T")[0];
-	const end = endDate.toISOString().split("T")[0];
-	const response = await fetch(
-		`https://hackatime.hackclub.com/api/v1/authenticated/hours?start_date=${start}&end_date=${end}`,
-		{
-			headers: {
-				Authorization: `Bearer ${connection.accessToken}`,
+
+	try {
+		if (!connection) {
+			throw new Error("Hackatime is not connected");
+		}
+		const start = startDate.toISOString().split("T")[0];
+		const end = endDate.toISOString().split("T")[0];
+		const response = await fetch(
+			`https://hackatime.hackclub.com/api/v1/authenticated/hours?start_date=${start}&end_date=${end}`,
+			{
+				headers: {
+					Authorization: `Bearer ${connection.accessToken}`,
+				},
 			},
-		},
-	);
-	if (!response.ok) {
-		throw new Error("Unable to fetch Hackatime hours");
+		);
+		if (!response.ok) {
+			throw new Error("Unable to fetch Hackatime hours");
+		}
+		const data = hackatimeHoursResponseSchema.parse(await response.json());
+		return data;
 	}
-	const data = hackatimeHoursResponseSchema.parse(await response.json());
-	return data;
+	catch {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "Failed to get Hackatime Hours"
+		})
+	}
 }
 
 export async function getHackatimeUser(userId: string) {
@@ -94,24 +103,69 @@ export async function getHackatimeUser(userId: string) {
 			error: "Unable to reach hackatime.",
 		};
 	}
-
-	const response = await fetch(
-		"https://hackatime.hackclub.com/api/v1/authenticated/me",
-		{
-			headers: {
-				Authorization: `Bearer ${connection.accessToken}`,
+	try {
+		const response = await fetch(
+			"https://hackatime.hackclub.com/api/v1/authenticated/me",
+			{
+				headers: {
+					Authorization: `Bearer ${connection.accessToken}`,
+				},
 			},
-		},
-	);
+		);
 
-	if (!response.ok) {
-		throw new TRPCError({
-			code: "BAD_REQUEST",
-			message: "Failed to fetch user from hackatime User string",
-		});
+		if (!response.ok) {
+			throw new TRPCError({
+				code: "BAD_REQUEST",
+				message: "Failed to fetch user from hackatime User string",
+			});
+		}
+
+		const data = hackatimeUserSchema.parse(await response.json());
+
+		return data;
 	}
+	catch {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "Failed to fetch hackatime data"
+		})
+	}
+}
 
-	const data = hackatimeUserSchema.parse(await response.json());
 
-	return data;
+export async function getHackatimeHeartBeats(userId: string) {
+	const connection = await prisma.hackatimeConnection.findUnique({
+		where : {
+			userId,
+		}
+	})
+	if (!connection) {
+		return {
+			success: false as const,
+			error: "Unable to get heatbeats"
+		}
+	}
+	try {
+		const response = await fetch("https://hackatime.hackclub.com/api/v1/authenticated/heartbeats/latest", {
+			headers : {
+				Authorization : `Bearer ${connection.accessToken}`
+			}
+		})
+
+		if (!response.ok) {
+			throw new TRPCError({
+				code : "BAD_REQUEST",
+				message : "Failed to fetch hackatime heartbeats.",
+			});
+		}
+
+		const data = latestHackatimeHeartbeatsSchema.parse(await response.json());
+		return data;
+
+	} catch {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "Failed to fetch hackatime heartbeats"
+		})
+	}
 }
