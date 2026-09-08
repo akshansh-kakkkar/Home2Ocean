@@ -14,15 +14,16 @@ export const hackatimeRouter = router({
 	getUser: protectedProcedure.query(async ({ ctx }) => {
 		return getHackatimeUserController(ctx.session.user.id);
 	}),
-	getHeartBeats : protectedProcedure.query(async ({ ctx })=>{
-		return getHackatimeHeartbeatController(ctx.session.user.id)
+	getHeartBeats: protectedProcedure.query(async ({ ctx }) => {
+		return getHackatimeHeartbeatController(ctx.session.user.id);
 	}),
-	gethackatimeProjectController : protectedProcedure.input(associateHackatimeProjectSchema).query(async ({ ctx, input })=>{
-		return getHacktimeProjectController(
-			ctx.session.user.id,
-			input.projectId,
-			input.hackatimeProjectName
-		)
-	})
+	gethackatimeProjectController: protectedProcedure
+		.input(associateHackatimeProjectSchema)
+		.mutation(async ({ ctx, input }) => {
+			return getHacktimeProjectController(
+				ctx.session.user.id,
+				input.projectId,
+				input.hackatimeProjectName,
+			);
+		}),
 });
-

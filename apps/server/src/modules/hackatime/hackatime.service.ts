@@ -6,7 +6,6 @@ import {
 	hackatimeUserSchema,
 	latestHackatimeHeartbeatsSchema,
 } from "./hackatime.schema";
-
 export async function getHackatimeProjects(userId: string) {
 	const connection = await prisma.hackatimeConnection.findUnique({
 		where: {
@@ -65,7 +64,6 @@ export async function getHackatimeHours(
 		throw new Error("Hackatime is not connected");
 	}
 	try {
-
 		const start = startDate.toISOString().split("T")[0];
 		const end = endDate.toISOString().split("T")[0];
 		const response = await fetch(
@@ -81,12 +79,11 @@ export async function getHackatimeHours(
 		}
 		const data = hackatimeHoursResponseSchema.parse(await response.json());
 		return data;
-	}
-	catch {
+	} catch {
 		throw new TRPCError({
 			code: "NOT_FOUND",
-			message: "Failed to get Hackatime Hours"
-		})
+			message: "Failed to get Hackatime Hours",
+		});
 	}
 }
 
@@ -121,37 +118,38 @@ export async function getHackatimeUser(userId: string) {
 		const data = hackatimeUserSchema.parse(await response.json());
 
 		return data;
-	}
-	catch (error) {
+	} catch (error) {
 		if (error instanceof TRPCError) {
 			throw error;
 		}
 		throw new TRPCError({
 			code: "NOT_FOUND",
-			message: "Failed to fetch hackatime data"
-		})
+			message: "Failed to fetch hackatime data",
+		});
 	}
 }
-
 
 export async function getHackatimeHeartBeats(userId: string) {
 	const connection = await prisma.hackatimeConnection.findUnique({
 		where: {
 			userId,
-		}
-	})
+		},
+	});
 	if (!connection) {
 		return {
 			success: false as const,
-			error: "Unable to get heatbeats"
-		}
+			error: "Unable to get heatbeats",
+		};
 	}
 	try {
-		const response = await fetch("https://hackatime.hackclub.com/api/v1/authenticated/heartbeats/latest", {
-			headers: {
-				Authorization: `Bearer ${connection.accessToken}`
-			}
-		})
+		const response = await fetch(
+			"https://hackatime.hackclub.com/api/v1/authenticated/heartbeats/latest",
+			{
+				headers: {
+					Authorization: `Bearer ${connection.accessToken}`,
+				},
+			},
+		);
 
 		if (!response.ok) {
 			throw new TRPCError({
@@ -162,24 +160,27 @@ export async function getHackatimeHeartBeats(userId: string) {
 
 		const data = latestHackatimeHeartbeatsSchema.parse(await response.json());
 		return data;
-
 	} catch (error) {
 		if (error instanceof TRPCError) {
 			throw error;
 		}
 		throw new TRPCError({
 			code: "NOT_FOUND",
-			message: "Failed to fetch hackatime heartbeats"
-		})
+			message: "Failed to fetch hackatime heartbeats",
+		});
 	}
 }
 
-export async function getHackatimeProject(userId: string, id: string, hackatimeProjectName: string) {
+export async function getHackatimeProject(
+	userId: string,
+	id: string,
+	hackatimeProjectName: string,
+) {
 	const connection = await prisma.hackatimeConnection.findUnique({
 		where: {
 			userId,
-		}
-	})
+		},
+	});
 
 	if (!connection) {
 		throw new TRPCError({
@@ -189,43 +190,53 @@ export async function getHackatimeProject(userId: string, id: string, hackatimeP
 	}
 	const project = await prisma.project.findUnique({
 		where: {
-			id
-		}
-	})
+			id,
+		},
+	});
 
 	if (!project) {
 		throw new TRPCError({
 			code: "NOT_FOUND",
-			message: "This project does not exists."
-		})
+			message: "This project does not exists.",
+		});
 	}
 
 	if (project.userId !== userId) {
 		throw new TRPCError({
 			code: "FORBIDDEN",
-			message: "You don't have permissions to use this project."
-		})
+			message: "You don't have permissions to use this project.",
+		});
 	}
 	const hackatimeProjects = await getHackatimeProjects(userId);
 
 	if (!hackatimeProjects.success) {
 		throw new TRPCError({
 			code: "NOT_FOUND",
-			message: "Projects not found"
-		})
+			message: "Projects not found",
+		});
 	}
 
 	const hackatimeProject = hackatimeProjects.projects.find(
-		(project) => project.name === hackatimeProjectName
-	)
+		(project) => project.name === hackatimeProjectName,
+	);
 
 	if (!hackatimeProject) {
 		throw new TRPCError({
 			code: "NOT_FOUND",
 			message: "Project not found",
-		})
+		});
 	}
 
-	return hackatimeProject;
+	await prisma.project.update({
+		where: {
+			id,
+		},
+		data: {
+			hackatimeProjectName,
+		},
+	});
 
+	return {
+		success: true,
+	};
 }

@@ -1,12 +1,13 @@
 import z from "zod";
+import type { projectSchema } from "../projects/project.schema";
 
 export const hackatimeProjectSchema = z.object({
-	name : z.string(),
-	total_seconds : z.number(),
-	most_recent_heartbeat : z.string(),
-	languages : z.string().array(),
-	archived : z.boolean()
-})
+	name: z.string(),
+	total_seconds: z.number(),
+	most_recent_heartbeat: z.string(),
+	languages: z.string().array(),
+	archived: z.boolean(),
+});
 
 export const hackatimeProjectResponseSchema = z.object({
 	projects: z.array(hackatimeProjectSchema),
@@ -15,6 +16,7 @@ export const hackatimeProjectResponseSchema = z.object({
 export type HackatimeProjectsResponse = z.infer<
 	typeof hackatimeProjectResponseSchema
 >;
+type ProjectSchema = z.infer<typeof projectSchema>;
 
 export const hackatimeHoursResponseSchema = z.object({
 	total_seconds: z.number(),
@@ -31,20 +33,22 @@ export const hackatimeUserSchema = z.object({
 	}),
 });
 
-export const latestHackatimeHeartbeatsSchema = z.object({
-	id : z.string(),
-	created_at : z.string().datetime(),
-	time : z.string().datetime(),
-	category : z.string(),
-	project : z.string(),
-	language : z.string(),
-	editor : z.string(),
-	operating_system : z.string(),
-	machine : z.string(),
-	entity : z.string(),
-}).nullable()
+export const latestHackatimeHeartbeatsSchema = z
+	.object({
+		id: z.string(),
+		created_at: z.string().datetime(),
+		time: z.string().datetime(),
+		category: z.string(),
+		project: z.string(),
+		language: z.string(),
+		editor: z.string(),
+		operating_system: z.string(),
+		machine: z.string(),
+		entity: z.string(),
+	})
+	.nullable();
 
 export const associateHackatimeProjectSchema = z.object({
-	projectId : z.string(),
-	hackatimeProjectName : z.string(),
-})
+	projectId: z.string(),
+	hackatimeProjectName: z.string(),
+});
