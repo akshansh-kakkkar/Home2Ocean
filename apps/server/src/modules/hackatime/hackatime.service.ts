@@ -61,11 +61,11 @@ export async function getHackatimeHours(
 			userId,
 		},
 	});
-
+	if (!connection) {
+		throw new Error("Hackatime is not connected");
+	}
 	try {
-		if (!connection) {
-			throw new Error("Hackatime is not connected");
-		}
+
 		const start = startDate.toISOString().split("T")[0];
 		const end = endDate.toISOString().split("T")[0];
 		const response = await fetch(
@@ -112,19 +112,20 @@ export async function getHackatimeUser(userId: string) {
 				},
 			},
 		);
-
 		if (!response.ok) {
 			throw new TRPCError({
 				code: "BAD_REQUEST",
-				message: "Failed to fetch user from hackatime User string",
+				message: "Failed to fetch hackatime heartbeats.",
 			});
 		}
-
 		const data = hackatimeUserSchema.parse(await response.json());
 
 		return data;
 	}
-	catch {
+	catch (error) {
+		if (error instanceof TRPCError) {
+			throw error;
+		}
 		throw new TRPCError({
 			code: "NOT_FOUND",
 			message: "Failed to fetch hackatime data"
@@ -135,7 +136,7 @@ export async function getHackatimeUser(userId: string) {
 
 export async function getHackatimeHeartBeats(userId: string) {
 	const connection = await prisma.hackatimeConnection.findUnique({
-		where : {
+		where: {
 			userId,
 		}
 	})
@@ -147,25 +148,84 @@ export async function getHackatimeHeartBeats(userId: string) {
 	}
 	try {
 		const response = await fetch("https://hackatime.hackclub.com/api/v1/authenticated/heartbeats/latest", {
-			headers : {
-				Authorization : `Bearer ${connection.accessToken}`
+			headers: {
+				Authorization: `Bearer ${connection.accessToken}`
 			}
 		})
 
 		if (!response.ok) {
 			throw new TRPCError({
-				code : "BAD_REQUEST",
-				message : "Failed to fetch hackatime heartbeats.",
+				code: "BAD_REQUEST",
+				message: "Failed to fetch hackatime heartbeats.",
 			});
 		}
 
 		const data = latestHackatimeHeartbeatsSchema.parse(await response.json());
 		return data;
 
-	} catch {
+	} catch (error) {
+		if (error instanceof TRPCError) {
+			throw error;
+		}
 		throw new TRPCError({
 			code: "NOT_FOUND",
 			message: "Failed to fetch hackatime heartbeats"
 		})
 	}
+}
+
+export async function getHackatimeProject(userId: string, id: string, hackatimeProjectName: string) {
+	const connection = await prisma.hackatimeConnection.findUnique({
+		where: {
+			userId,
+		}
+	})
+
+	if (!connection) {
+		throw new TRPCError({
+			code: "BAD_REQUEST",
+			message: "This connection does not exist",
+		});
+	}
+	const project = await prisma.project.findUnique({
+		where: {
+			id
+		}
+	})
+
+	if (!project) {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "This project does not exists."
+		})
+	}
+
+	if (project.userId !== userId) {
+		throw new TRPCError({
+			code: "FORBIDDEN",
+			message: "You don't have permissions to use this project."
+		})
+	}
+	const hackatimeProjects = await getHackatimeProjects(userId);
+
+	if (!hackatimeProjects.success) {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "Projects not found"
+		})
+	}
+
+	const hackatimeProject = hackatimeProjects.projects.find(
+		(project) => project.name === hackatimeProjectName
+	)
+
+	if (!hackatimeProject) {
+		throw new TRPCError({
+			code: "NOT_FOUND",
+			message: "Project not found",
+		})
+	}
+
+	return hackatimeProject;
+
 }

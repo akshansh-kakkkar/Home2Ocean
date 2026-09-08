@@ -3,7 +3,9 @@ import {
 	getHackatimeConnectionController,
 	getHackatimeHeartbeatController,
 	getHackatimeUserController,
+	getHacktimeProjectController,
 } from "./hackatime.controller";
+import { associateHackatimeProjectSchema } from "./hackatime.schema";
 
 export const hackatimeRouter = router({
 	projects: protectedProcedure.query(async ({ ctx }) => {
@@ -14,6 +16,13 @@ export const hackatimeRouter = router({
 	}),
 	getHeartBeats : protectedProcedure.query(async ({ ctx })=>{
 		return getHackatimeHeartbeatController(ctx.session.user.id)
+	}),
+	gethackatimeProjectController : protectedProcedure.input(associateHackatimeProjectSchema).query(async ({ ctx, input })=>{
+		return getHacktimeProjectController(
+			ctx.session.user.id,
+			input.projectId,
+			input.hackatimeProjectName
+		)
 	})
 });
 

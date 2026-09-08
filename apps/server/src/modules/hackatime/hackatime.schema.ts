@@ -1,7 +1,15 @@
 import z from "zod";
 
+export const hackatimeProjectSchema = z.object({
+	name : z.string(),
+	total_seconds : z.number(),
+	most_recent_heartbeat : z.string(),
+	languages : z.string().array(),
+	archived : z.boolean()
+})
+
 export const hackatimeProjectResponseSchema = z.object({
-	projects: z.array(z.unknown()),
+	projects: z.array(hackatimeProjectSchema),
 });
 
 export type HackatimeProjectsResponse = z.infer<
@@ -35,3 +43,8 @@ export const latestHackatimeHeartbeatsSchema = z.object({
 	machine : z.string(),
 	entity : z.string(),
 }).nullable()
+
+export const associateHackatimeProjectSchema = z.object({
+	projectId : z.string(),
+	hackatimeProjectName : z.string(),
+})
