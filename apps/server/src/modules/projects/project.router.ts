@@ -5,7 +5,6 @@ import {
 	editProjectController,
 	getAllProjectsController,
 	getProjectController,
-	startProjectTrackingController,
 } from "./project.controller";
 import {
 	createProjectSchema,
@@ -14,7 +13,6 @@ import {
 	getAllProjectSchema,
 	getProjectSchema,
 	projectSchema,
-	startTrackingSchema,
 } from "./project.schema";
 
 export const projectRouter = router({
@@ -48,14 +46,14 @@ export const projectRouter = router({
 		.query(async ({ ctx }) => {
 			return getAllProjectsController(ctx.session.user.id);
 		}),
-	startTracking: protectedProcedure
-		.input(startTrackingSchema)
-		.output(projectSchema)
-		.mutation(async ({ ctx, input }) => {
-			return startProjectTrackingController(
-				input.id,
-				ctx.session.user.id,
-				input.stopAt,
-			);
-		}),
+	// startTracking: protectedProcedure
+	// 	.input(startTrackingSchema)
+	// 	.output(projectSchema)
+	// 	.mutation(async ({ ctx, input }) => {
+	// 		return startProjectTrackingController(
+	// 			input.id,
+	// 			ctx.session.user.id,
+	// 			input.stopAt,
+	// 		);
+	// 	}),
 });

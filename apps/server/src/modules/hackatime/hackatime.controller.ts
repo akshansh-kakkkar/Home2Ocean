@@ -1,4 +1,3 @@
-import type { Project } from "@home2ocean/db";
 import {
 	getHackatimeHeartBeats,
 	getHackatimeProject,

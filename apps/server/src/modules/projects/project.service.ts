@@ -152,46 +152,46 @@ export async function getAllProjects(userId: string): Promise<Project[]> {
 	});
 }
 
-export async function startProjectTracking(
-	id: string,
-	userId: string,
-	stopAt: Date,
-): Promise<Project> {
-	const project = await prisma.project.findUnique({
-		where: { id },
-	});
+// export async function startProjectTracking(
+// 	id: string,
+// 	userId: string,
+// 	stopAt: Date,
+// ): Promise<Project> {
+// 	const project = await prisma.project.findUnique({
+// 		where: { id },
+// 	});
 
-	if (!project) {
-		throw new TRPCError({
-			code: "NOT_FOUND",
-			message: "Project not found",
-		});
-	}
+// 	if (!project) {
+// 		throw new TRPCError({
+// 			code: "NOT_FOUND",
+// 			message: "Project not found",
+// 		});
+// 	}
 
-	if (project.userId !== userId) {
-		throw new TRPCError({
-			code: "FORBIDDEN",
-			message: "You do not own this project",
-		});
-	}
+// 	if (project.userId !== userId) {
+// 		throw new TRPCError({
+// 			code: "FORBIDDEN",
+// 			message: "You do not own this project",
+// 		});
+// 	}
 
-	if (project.hackatimeStartedAt) {
-		throw new TRPCError({
-			code: "CONFLICT",
-			message: "Tracking has already started",
-		});
-	}
-	if (stopAt <= new Date()) {
-		throw new TRPCError({
-			code: "BAD_REQUEST",
-			message: "Stop time must be in the future",
-		});
-	}
-	return prisma.project.update({
-		where: { id },
-		data: {
-			hackatimeStartedAt: new Date(),
-			hackatimeEndedAt: stopAt,
-		},
-	});
-}
+// 	if (project.hackatimeStartedAt) {
+// 		throw new TRPCError({
+// 			code: "CONFLICT",
+// 			message: "Tracking has already started",
+// 		});
+// 	}
+// 	if (stopAt <= new Date()) {
+// 		throw new TRPCError({
+// 			code: "BAD_REQUEST",
+// 			message: "Stop time must be in the future",
+// 		});
+// 	}
+// 	return prisma.project.update({
+// 		where: { id },
+// 		data: {
+// 			hackatimeStartedAt: new Date(),
+// 			hackatimeEndedAt: stopAt,
+// 		},
+// 	});
+// }

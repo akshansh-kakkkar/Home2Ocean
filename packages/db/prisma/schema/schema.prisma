@@ -81,8 +81,6 @@ model Project {
   githubUrl            String
   demoUrl              String
   hackatimeProjectName String?
-  hackatimeStartedAt   DateTime?
-  hackatimeEndedAt     DateTime?
   user                 User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   status               ProjectStatus @default(DRAFT)
   createdAt            DateTime      @default(now())
