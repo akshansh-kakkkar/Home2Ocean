@@ -5,14 +5,17 @@ import { shopRouter } from "./modules/shop/shop.router";
 import { submissionRouter } from "./modules/submission/submission.router";
 import { trackingRouter } from "./modules/tracking/tracking.router";
 import { userRouter } from "./modules/users/user.router";
+import { walletRouter } from "./modules/wallet/wallet.router";
 import { router } from "./trpc";
+
 export const appRouter = router({
 	user: userRouter,
 	reviewers: reviewerRouter,
 	tracking: trackingRouter,
 	hackatime: hackatimeRouter,
 	submission: submissionRouter,
-	shop : shopRouter,
-	purchaseReward : purchaseRewardRouter,
+	shop: shopRouter,
+	purchaseReward: purchaseRewardRouter,
+	getWallet: walletRouter,
 });
 export type AppRouter = typeof appRouter;
