@@ -1,26 +1,27 @@
 model User {
   id                  String               @id
   name                String
-  email               String @unique
+  email               String               @unique
   emailVerified       Boolean              @default(false)
   image               String?
   role                Roles                @default(USER)
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   sessions            Session[]
-  createdTimeTracks TimeTrack[]   @relation("CreatedTimeTracks")
+  createdTimeTracks   TimeTrack[]          @relation("CreatedTimeTracks")
   accounts            Account[]
   projects            Project[]
-  isOwner Boolean @default(false)
+  isOwner             Boolean              @default(false)
   reviews             Review[]
-  permissions UserPermission[] @relation("UserPermissions")
-  permissionsGranted UserPermission[] @relation("GrantedPermissions")
+  permissions         UserPermission[]     @relation("UserPermissions")
+  permissionsGranted  UserPermission[]     @relation("GrantedPermissions")
   hackatimeConnection HackatimeConnection?
-  wallet Wallet?
-  walletTransactions WalletTransaction[]
-  purchases Purchase[]
-  auditLogs AuditLog[]
-  
+  wallet              Wallet?
+  walletTransactions  WalletTransaction[]
+  purchases           Purchase[]
+  auditLogs           AuditLog[]
+  reviewClaims        ReviewClaim[]
+
   @@map("user")
 }
 

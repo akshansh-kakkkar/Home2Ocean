@@ -32,7 +32,6 @@ enum Roles {
   ADMIN
 }
 
-
 enum ProjectStatus {
   DRAFT
   UNDER_REVIEW
@@ -48,13 +47,13 @@ enum ReviewDecision {
 }
 
 model TimeTrack {
-  id String @id
-  startAt  DateTime
-  stopAt DateTime
-  createdAt DateTime @default(now())
+  id          String   @id
+  startAt     DateTime
+  stopAt      DateTime
+  createdAt   DateTime @default(now())
   createdById String
-  createdBy User @relation("CreatedTimeTracks", fields: [createdById], references: [id], onDelete: Cascade)
-  updatedAt  DateTime @updatedAt
+  createdBy   User     @relation("CreatedTimeTracks", fields: [createdById], references: [id], onDelete: Cascade)
+  updatedAt   DateTime @updatedAt
 }
 
 model UserPermission {
@@ -86,10 +85,24 @@ model Project {
   createdAt            DateTime      @default(now())
   updatedAt            DateTime      @updatedAt
   reviews              Review[]
+  reviewClaim          ReviewClaim?
 
   @@index([userId])
   @@index([status])
   @@map("project")
+}
+
+model ReviewClaim {
+  id         String   @id
+  projectId  String   @unique
+  reviewerId String
+  claimedAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  reviewer User @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  @@index([reviewerId])
+  @@map("review_claim")
 }
 
 model Review {
