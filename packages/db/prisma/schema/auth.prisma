@@ -21,6 +21,7 @@ model User {
   purchases           Purchase[]
   auditLogs           AuditLog[]
   reviewClaims        ReviewClaim[]
+  reviewEscalations ReviewEscalation[]
 
   @@map("user")
 }

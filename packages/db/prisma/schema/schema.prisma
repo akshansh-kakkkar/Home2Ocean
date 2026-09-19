@@ -35,6 +35,7 @@ enum Roles {
 enum ProjectStatus {
   DRAFT
   UNDER_REVIEW
+  ESCALATED
   APPROVED
   REJECTED
   PERMANENTLY_REJECTED
@@ -72,7 +73,7 @@ model UserPermission {
 }
 
 model Project {
-  id                   String        @id
+  id                   String             @id
   userId               String
   bannerUrl            String?
   title                String
@@ -80,12 +81,13 @@ model Project {
   githubUrl            String
   demoUrl              String
   hackatimeProjectName String?
-  user                 User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  status               ProjectStatus @default(DRAFT)
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status               ProjectStatus      @default(DRAFT)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
   reviews              Review[]
   reviewClaim          ReviewClaim?
+  escalations          ReviewEscalation[]
 
   @@index([userId])
   @@index([status])
@@ -98,8 +100,8 @@ model ReviewClaim {
   reviewerId String
   claimedAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  reviewer User @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  reviewer   User     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
 
   @@index([reviewerId])
   @@map("review_claim")
@@ -119,6 +121,18 @@ model Review {
   @@index([projectId])
   @@index([reviewerId])
   @@map("review")
+}
+
+model ReviewEscalation {
+  id         String   @id
+  projectId  String
+  reviewerId String
+  reason     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  reviewer User    @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
 }
 
 model HackatimeConnection {

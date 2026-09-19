@@ -17,5 +17,6 @@ export const appRouter = router({
 	shop: shopRouter,
 	purchaseReward: purchaseRewardRouter,
 	getWallet: walletRouter,
+	reviewer: reviewerRouter,
 });
 export type AppRouter = typeof appRouter;
