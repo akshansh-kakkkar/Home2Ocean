@@ -1,3 +1,4 @@
+import { adminRouter } from "./modules/admin/admin.router";
 import { hackatimeRouter } from "./modules/hackatime/hackatime.router";
 import { purchaseRewardRouter } from "./modules/orders/order.router";
 import { reviewerRouter } from "./modules/reviewer";
@@ -18,5 +19,6 @@ export const appRouter = router({
 	purchaseReward: purchaseRewardRouter,
 	getWallet: walletRouter,
 	reviewer: reviewerRouter,
+	admin : adminRouter
 });
 export type AppRouter = typeof appRouter;

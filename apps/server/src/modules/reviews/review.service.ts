@@ -2,6 +2,7 @@ import prisma from "@home2ocean/db";
 import { TRPCError } from "@trpc/server";
 import { randomUUIDv7 } from "bun";
 import type { ProjectStatus } from "../../../../../packages/db/prisma/generated/enums";
+
 export async function claimProject(projectId: string, reviewerId: string) {
 	const project = await prisma.project.findUnique({
 		where: {
@@ -138,7 +139,7 @@ export async function reviewProject(
 	return result;
 }
 
-export async function reviewerEscalateProject({
+export async function reviewEscallateProjectService({
 	reviewerId,
 	projectId,
 	reason,
@@ -159,4 +160,60 @@ export async function reviewerEscalateProject({
 			message: "Project not found",
 		});
 	}
+
+	if (project.status !== "UNDER_REVIEW") {
+		throw new TRPCError({
+			code: "BAD_REQUEST",
+			message: "Project is not under review."
+		})
+	}
+
+	const reviewClaim = await prisma.reviewClaim.findUnique({
+		where: {
+			projectId: projectId,
+		}
+	})
+
+	if (!reviewClaim) {
+		throw new TRPCError({
+			code: "BAD_REQUEST",
+			message: "Project is not claimed",
+		})
+	}
+
+	if (reviewClaim.reviewerId !== reviewerId) {
+		throw new TRPCError({
+			code: "FORBIDDEN",
+			message: "You are not allowed to perform this action"
+		})
+	}
+
+	const result = await prisma.$transaction(async (tx) => {
+		await tx.project.update({
+			where: {
+				id: projectId,
+			},
+			data: {
+				status: "ESCALATED"
+			},
+		});
+		await tx.reviewEscalation.create({
+			data: {
+				id: randomUUIDv7(),
+				projectId: projectId,
+				reviewerId: reviewerId,
+				reason: reason,
+			}
+		})
+
+		await tx.reviewClaim.delete({
+
+			where: {
+				projectId: projectId,
+			}
+		})
+		{ success: true }
+	})
+
+	return result;
 }

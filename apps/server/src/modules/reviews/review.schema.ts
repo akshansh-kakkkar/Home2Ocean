@@ -14,7 +14,7 @@ export const claimProjectSchema = z.object({
 	projectId: z.string(),
 });
 
-export const reviewEscalationSchema = z.object({
+export const reviewEscallationSchema = z.object({
 	id: z.string(),
 	projectId: z.string(),
 	reviewerId: z.string(),

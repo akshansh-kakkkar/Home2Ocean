@@ -81,6 +81,7 @@ model Project {
   githubUrl            String
   demoUrl              String
   hackatimeProjectName String?
+  lastReviewedHackatimeSeconds Int?
   user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   status               ProjectStatus      @default(DRAFT)
   createdAt            DateTime           @default(now())
