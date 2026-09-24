@@ -2,6 +2,7 @@ import prisma from "@home2ocean/db";
 import { TRPCError } from "@trpc/server";
 import { randomUUIDv7 } from "bun";
 import type { ProjectStatus } from "../../../../../packages/db/prisma/generated/enums";
+import { getHackatimeProjects } from "../hackatime/hackatime.service";
 
 export async function claimProject(projectId: string, reviewerId: string) {
 	const project = await prisma.project.findUnique({
@@ -109,6 +110,40 @@ export async function reviewProject(
 				message: "Invalid review decision",
 			});
 	}
+
+	let totalSeconds: number | undefined;
+
+	if (decision === "PROJECT_APPROVED") {
+		if (!project.hackatimeProjectName) {
+			throw new TRPCError({
+				code: "BAD_REQUEST",
+				message: "Project is not associated with hackatime project."
+			})
+		}
+
+		const hackatimeProject = await getHackatimeProjects(project.userId);
+
+		if (!hackatimeProject.success) {
+			throw new TRPCError({
+				code: "NOT_FOUND",
+				message: "Unable to fetch hackatime project data."
+			})
+		}
+
+		const hackatimeProjects = hackatimeProject.projects.find(
+			(item) => item.name === project.hackatimeProjectName,
+		);
+
+		if (!hackatimeProjects) {
+			throw new TRPCError({
+				code: "NOT_FOUND",
+				message: "Associated hackatime projects not found."
+			})
+		}
+
+		totalSeconds = hackatimeProjects.total_seconds
+	}
+
 	const result = await prisma.$transaction(async (tx) => {
 		await tx.project.update({
 			where: {
@@ -116,6 +151,9 @@ export async function reviewProject(
 			},
 			data: {
 				status: newStatus,
+				...(totalSeconds !== undefined && {
+					lastReviewedHackatimeSeconds: totalSeconds,
+				}),
 			},
 		});
 
