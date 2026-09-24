@@ -95,6 +95,10 @@ export async function adminReviewEscallation({
             },
             data: {
                 status: newStatus,
+                ...(totalSeconds !== undefined && {
+                    lastReviewedHackatimeSeconds: totalSeconds,
+
+                })
             }
         })
 
